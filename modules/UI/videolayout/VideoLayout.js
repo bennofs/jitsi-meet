@@ -288,8 +288,13 @@ const VideoLayout = {
         }
 
         const id = participant.id;
+        const myId = APP.conference.getMyUserId();
+
+        // compute the position in a way that all particpants observe the same ordering
+        const rank = Object.keys(remoteVideos).filter(x => x < id).length + ((id > myId) ? 1 : 0);
+
         const jitsiParticipant = APP.conference.getParticipantById(id);
-        const remoteVideo = new RemoteVideo(jitsiParticipant, VideoLayout);
+        const remoteVideo = new RemoteVideo(rank, jitsiParticipant, VideoLayout);
 
         this._setRemoteControlProperties(jitsiParticipant, remoteVideo);
         this.addRemoteVideoContainer(id, remoteVideo);

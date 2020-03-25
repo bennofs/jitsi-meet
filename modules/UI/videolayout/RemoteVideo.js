@@ -33,7 +33,7 @@ import UIUtils from '../util/UIUtil';
  *
  * @param {*} spanId
  */
-function createContainer(spanId) {
+function createContainer(position, spanId) {
     const container = document.createElement('span');
 
     container.id = spanId;
@@ -51,10 +51,9 @@ function createContainer(spanId) {
 
     const remoteVideosContainer
         = document.getElementById('filmstripRemoteVideosContainer');
-    const localVideoContainer
-        = document.getElementById('localVideoTileViewContainer');
+    const before = remoteVideosContainer.children[position];
 
-    remoteVideosContainer.insertBefore(container, localVideoContainer);
+    remoteVideosContainer.insertBefore(container, before);
 
     return container;
 }
@@ -70,9 +69,10 @@ export default class RemoteVideo extends SmallVideo {
      * @param {VideoLayout} VideoLayout the video layout instance.
      * @constructor
      */
-    constructor(user, VideoLayout) {
+    constructor(position, user, VideoLayout) {
         super(VideoLayout);
 
+        this.position = position;
         this.user = user;
         this.id = user.getId();
         this.videoSpanId = `participant_${this.id}`;
@@ -124,7 +124,7 @@ export default class RemoteVideo extends SmallVideo {
      *
      */
     addRemoteVideoContainer() {
-        this.container = createContainer(this.videoSpanId);
+        this.container = createContainer(this.position, this.videoSpanId);
         this.$container = $(this.container);
         this.initializeAvatar();
         this._setThumbnailSize();
